@@ -32,6 +32,7 @@ int main()
     cin >> n;
     for (int i = 0; i < n; i++)
     {
+        cin.ignore();
         cin.getline(ucenici[brUcenika + i].ImePrezime, 50);
         cin >> ucenici[brUcenika].prosjek;
     }
