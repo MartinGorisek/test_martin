@@ -5,55 +5,40 @@
 #include <unordered_set>
 using namespace std;
 
+struct Ucenik
+{
+    char ImePrezime[50];
+    float prosjek;
+};
+
+bool cmp(Ucenik &a, Ucenik &b)
+{
+    return a.prosjek > b.prosjek;
+}
+
 int main()
 {
-    int n, br = 0;
-    ifstream datoteka("C:/Users/marti/OneDrive - CARNET/Dokumenti/GitHub/test_martin/imenik.txt");
-    string *prezimeIme = new string[101];
-    string linija;
+    struct Ucenik ucenici[100];
+    int brUcenika = 0;
+    fstream datoteka1("C:/Users/Ga-gama/Documents/GitHub/test_martin/data.bin", ios::binary | ios::in);
 
-    unordered_set<string> imenaSet;
-
-    while (getline(datoteka, linija))
+    while (datoteka1.read((char *)&ucenici[brUcenika], sizeof(Ucenik)))
     {
-        prezimeIme[br] = linija;
-        cout << linija << endl;
-        imenaSet.insert(linija);
-        br++;
+        cout << ucenici[brUcenika].ImePrezime << " " << ucenici[brUcenika].prosjek << endl;
+        brUcenika++;
     }
-    datoteka.close();
-
-    cout << "Unesite broj osoba čije podatke želite unijeti: ";
+    datoteka1.close();
+    int n;
     cin >> n;
-    cin.ignore();
-
-    for (int i = 0; i < n;)
+    for (int i = 0; i < n; i++)
     {
-        cout << "Unesite prezime i ime osobe: ";
-        getline(cin, linija);
-        if (imenaSet.find(linija) == imenaSet.end())
-        {
-            prezimeIme[br + i] = linija;
-            imenaSet.insert(linija);
-            i++;
-        }
-        else
-        {
-            cout << "To ime je već uneseno. Molimo unesite drugo ime." << endl;
-        }
+        cin.getline(ucenici[brUcenika + i].ImePrezime, 50);
+        cin >> ucenici[brUcenika].prosjek;
     }
-    br += n;
+    sort(ucenici, ucenici + brUcenika + n, cmp);
 
-    sort(prezimeIme, prezimeIme + br);
-
-    ofstream izlaznaDatoteka("C:/Users/marti/OneDrive - CARNET/Dokumenti/GitHub/test_martin/imenik.txt");
-    for (int i = 0; i < br; i++)
-    {
-        izlaznaDatoteka << prezimeIme[i] << endl;
-    }
-    izlaznaDatoteka.close();
-
-    delete[] prezimeIme;
-
+    fstream datoteka2("C:/Users/Ga-gama/Documents/GitHub/test_martin/data.bin", ios::binary | ios::out | ios::trunc);
+    datoteka2.write((char *)ucenici, sizeof(Ucenik) * (brUcenika + n));
+    datoteka2.close();
     return 0;
 }
